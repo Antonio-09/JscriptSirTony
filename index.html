@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+        }
+        header, footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .container {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px;
+        }
+        form {
+            width: 45%;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px 0px #000;
+            border-radius: 10px;
+            position: relative;
+        }
+        label {
+            display: inline-block;
+            width: 120px;
+            text-align: right;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+        input, select {
+            display: inline-block;
+            width: calc(100% - 150px);
+            margin-bottom: 10px;
+            padding: 5px;
+            font-size: 14px;
+        }
+        #submit-btn, #clear-btn {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        #greet-msg {
+            width: 45%;
+            text-align: center;
+            padding: 20px;
+            background-color: #d4edda;
+            color: #155724;
+            border-radius: 10px;
+            display: none;
+            animation: colorChange 3s infinite;
+            margin-top: 20px;
+        }
+        @keyframes colorChange {
+            0% { background-color: #d4edda; }
+            50% { background-color: #c3e6cb; }
+            100% { background-color: #d4edda; }
+        }
+        marquee {
+            font-size: 18px;
+        }
+        .info-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .save-btn {
+            padding: 8px 15px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: -120px;
+            width: 100px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <marquee behavior="scroll" direction="left">WELCOME TO ASIAN INSTITUTE OF TECHNOLOGY AND EDUCATION</marquee>
+    </header>
+
+    <div class="container">
+        <form id="student-form">
+            <img src="aitelogo.png" alt="AITE Logo" class="logo">
+            <h2>Fill up the Student Information</h2>
+            <label for="studentNumber">Student Number:</label>
+            <input type="text" id="studentNumber" name="studentNumber" required><br>
+
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br>
+
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" required><br>
+
+            <label for="contact">Contact Number:</label>
+            <input type="text" id="contact" name="contact" required><br>
+
+            <label for="picture">Upload Picture:</label>
+            <input type="file" id="picture" name="picture" accept="image/*" required><br>
+
+            <label for="school">School:</label>
+            <input type="text" id="school" name="school" required><br>
+
+            <label for="course">Course:</label>
+            <input type="text" id="course" name="course" required><br>
+
+            <label for="year">Year & Section:</label>
+            <input type="text" id="year" name="year" required><br>
+
+            <button type="button" id="submit-btn" onclick="submitForm()">Submit</button>
+            <button type="button" id="clear-btn" onclick="clearForm()">Clear</button>
+        </form>
+
+        <div id="greet-msg" class="info-center">
+            <img src="aitelogo.png" alt="AITE Logo" class="logo">
+        </div>
+    </div>
+
+    <footer>
+        <p>2024 - Student Portal</p>
+    </footer>
+
+    <script>
+        let registrationCount = 0;
+        const studentNumbers = new Set();
+        const studentDatabase = [];
+
+        function submitForm() {
+            const studentNumber = document.getElementById("studentNumber").value;
+            const name = document.getElementById("name").value;
+            const address = document.getElementById("address").value;
+            const contact = document.getElementById("contact").value;
+            const school = document.getElementById("school").value;
+            const course = document.getElementById("course").value;
+            const year = document.getElementById("year").value;
+
+            const picture = document.getElementById("picture").files[0];
+            const pictureURL = URL.createObjectURL(picture);
+
+            if (!/^\d+$/.test(contact)) {
+                alert("Contact number must be numbers only.");
+                return;
+            }
+
+            if (studentNumbers.has(studentNumber)) {
+                alert("This student number has already been registered.");
+                return;
+            }
+
+            studentNumbers.add(studentNumber);
+            registrationCount += 1;
+
+            const date = new Date();
+            const formattedDate = date.toLocaleString();
+
+            const studentData = {
+                studentNumber,
+                name,
+                address,
+                contact,
+                school,
+                course,
+                year,
+                pictureURL,
+                date: formattedDate
+            };
+            
+            // Store the information into the database
+            studentDatabase.push(studentData);
+
+            const greetMsg = document.getElementById("greet-msg");
+            greetMsg.innerHTML = `
+                <strong>Welcome, ${name}!</strong><br>
+                Your information:<br><br>
+                <strong>Student Number:</strong> ${studentNumber}<br>
+                <strong>Address:</strong> ${address}<br>
+                <strong>Contact Number:</strong> ${contact}<br>
+                <strong>School:</strong> ${school}<br>
+                <strong>Course:</strong> ${course}<br>
+                <strong>Year and Section:</strong> ${year}<br>
+                <img src="${pictureURL}" width="150" height="150"><br><br>
+                <strong>Date Registered:</strong> ${formattedDate}<br>
+                <strong>Number of Registrations:</strong> ${registrationCount}
+                <button class="save-btn" onclick="saveData()">Save to File</button>
+            `;
+            greetMsg.style.display = "block";
+
+            // Clear fields after submission
+            document.getElementById("student-form").reset();
+        }
+
+        function saveData() {
+            let textData = `Student Registrations:\n\n`;
+            
+            studentDatabase.forEach((student, index) => {
+                textData += `
+                    ${index + 1}. Student Number: ${student.studentNumber}\n
+                    Name: ${student.name}\n
+                    Address: ${student.address}\n
+                    Contact Number: ${student.contact}\n
+                    School: ${student.school}\n
+                    Course: ${student.course}\n
+                    Year and Section: ${student.year}\n
+                    Picture URL: ${student.pictureURL}\n
+                    Date Registered: ${student.date}\n\n
+                `;
+            });
+
+            const blob = new Blob([textData], { type: "text/plain" });
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = `Student_Registrations.txt`;
+            a.click();
+        }
+
+        function clearForm() {
+            document.getElementById("student-form").reset();
+            document.getElementById("greet-msg").style.display = "none";
+        }
+    </script>
+
+</body>
+</html>
